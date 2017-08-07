@@ -1,7 +1,5 @@
 #ifndef HMMDECODER_H_
 #define HMMDECODER_H_
-
-
 #define LEN 128
 #define NOS 3
 #define NOE 8

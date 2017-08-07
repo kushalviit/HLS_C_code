@@ -19,48 +19,44 @@ backward_seq[1][LEN]=1;
 backward_seq[2][LEN]=1;
 scaler[0]=1;
 
-for(i=1;i<=LEN;i++)
+Forward_outer_Loop: for(i=1;i<=LEN;i++)
 {
   index=sequence[i-1];
   index-=1;
   
-  for(j=0;j<NOS;j++)
-   {
-     temp=0;
-      for(k=0;k<NOS;k++)
-       {temp+=forward_seq[k][i-1]*tran_mat[k][j];
-        }
-      
-     forward_seq[j][i]=temp*emi_mat[j][index];
-     
-     scaler[i]+=forward_seq[j][i];
-     
-   }
+ Forward_Inner_LOOP: for(j=0;j<NOS;j++)
+                    {
+                       temp=0;
+                       Forward_MAC_LOOP: for(k=0;k<NOS;k++)
+                                       {temp+=forward_seq[k][i-1]*tran_mat[k][j];
+                                       }
+                     forward_seq[j][i]=temp*emi_mat[j][index];
+                     scaler[i]+=forward_seq[j][i];
+                     }
    
-   for(j=0;j<NOS;j++)
-   {
-    forward_seq[j][i]/=scaler[i];
-    
-   }
+Forward_Scaling_Loop: for(j=0;j<NOS;j++)
+                       {
+                         forward_seq[j][i]/=scaler[i];
+                       }
 }
 
-for(i=LEN;i>0;i--)
+Backward_outer_LOOP:for(i=LEN;i>0;i--)
 {
-  index=sequence[i-1];
-  index-=1;
-  for(j=0;j<NOS;j++)
-   {
-     temp=0;
-     for(k=0;k<NOS;k++)
-      temp+=tran_mat[j][k]*backward_seq[k][i]*emi_mat[k][index];
-     backward_seq[j][i-1]=temp/scaler[i];
-   }
+             index=sequence[i-1];
+             index-=1;
+Backward_Inner_LOOP:for(j=0;j<NOS;j++)
+             {
+               temp=0;
+               Backward_MAC_LOOP:for(k=0;k<NOS;k++)
+                  temp+=tran_mat[j][k]*backward_seq[k][i]*emi_mat[k][index];
+               backward_seq[j][i-1]=temp/scaler[i];
+              }
 }
 
-for(i=1;i<=LEN;i++)
+Output_outer_LOOP:for(i=1;i<=LEN;i++)
 {
-  for(k=0;k<NOS;k++)
-   output[k][i-1]=forward_seq[k][i]*backward_seq[k][i];   
+	Output_inner_LOOP:for(k=0;k<NOS;k++)
+         output[k][i-1]=forward_seq[k][i]*backward_seq[k][i];
 }
 
 }
