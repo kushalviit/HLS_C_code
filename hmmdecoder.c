@@ -3,9 +3,9 @@
 void hmm_decoder(seq_t sequence[LEN],mat_t tran_mat[NOS][NOS],mat_t  emi_mat[NOS][NOE],mat_t  output[NOS][LEN])
 {
 
-mat_t forward_seq[NOS][LEN+1]={0};
+mat_t forward_seq[NOS][LEN+1];
 mat_t backward_seq[NOS][LEN+1];
-mat_t scaler[LEN+1]={0};
+mat_t scaler[LEN+1];
 /*mat_t temp_out[NOS][LEN];*/
 int i;
 int j;
@@ -14,6 +14,8 @@ int index;
 float temp;
 
 forward_seq[0][0]=1;
+forward_seq[1][0]=0;
+forward_seq[2][0]=0;
 backward_seq[0][LEN]=1;
 backward_seq[1][LEN]=1;
 backward_seq[2][LEN]=1;
