@@ -33,7 +33,6 @@ Forward_outer_Loop: for(i=1;i<=LEN;i++)
                                        {temp+=forward_seq[k][i-1]*tran_mat[k][j];
                                        }
                      forward_seq[j][i]=temp*emi_mat[j][index];
-                     scaler[i]+=forward_seq[j][i];
                      }
    
 Forward_Scaling_Loop: for(j=0;j<NOS;j++)
@@ -51,8 +50,32 @@ Backward_Inner_LOOP:for(j=0;j<NOS;j++)
                temp=0;
                Backward_MAC_LOOP:for(k=0;k<NOS;k++)
                   temp+=tran_mat[j][k]*backward_seq[k][i]*emi_mat[k][index];
-               backward_seq[j][i-1]=temp/scaler[i];
+               backward_seq[j][i-1]=temp;
               }
+}
+
+SC_outer_Loop: for(i=1;i<=LEN;i++)
+{  
+     SC_inner_LOOP: for(j=0;j<NOS;j++)
+                           {
+                             scaler[i]+=forward_seq[j][i];
+                           } 
+}
+
+FS_outer_Loop: for(i=1;i<=LEN;i++)
+{  
+     FS_inner_LOOP: for(j=0;j<NOS;j++)
+                           {
+                             forward_seq[j][i]/=scaler[i];
+                           } 
+}
+
+BS_outer_Loop: for(i=LEN;i>0;i--)
+{  
+     BS_inner_LOOP: for(j=0;j<NOS;j++)
+                           {
+                             forward_seq[j][i]/=scaler[i];
+                           } 
 }
 
 Output_outer_LOOP:for(i=1;i<=LEN;i++)
