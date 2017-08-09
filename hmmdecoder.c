@@ -50,17 +50,15 @@ scaler[i]=temp;
 for(j=0;j<NOS;j++)
 forward_seq[j][i]=sum[j]/temp;
 
-printf("%d /n",LEN-i);
 index1=sequence[LEN-i];
 index1-=1;
 
 for(j=0;j<NOS;j++)
-{
 for(k=0;k<NOS;k++)
-{
 prod1[k][j]=tran_mat[j][k]*backward_seq[k][LEN-i+1]*emi_mat[k][index];
-}
-}
+
+
+
 for(j=0;j<NOS;j++)
 {
  sum1[j]=prod1[0][j]+prod1[1][j]+prod1[2][j];
@@ -71,10 +69,17 @@ backward_seq[j][LEN-i]=sum1[j];
 
 }
 
-for(i=0;i<=LEN;i++)
-for(j=0;j<NOS;j++)
+Backward_outer_LOOP:for(i=LEN;i>0;i--)
 {
-backward_seq[i][j]/=scaler[i];
+             index=sequence[i-1];
+             index-=1;
+Backward_Inner_LOOP:for(j=0;j<NOS;j++)
+             {
+               temp=0;
+               Backward_MAC_LOOP:for(k=0;k<NOS;k++)
+                  temp+=tran_mat[j][k]*backward_seq[k][i]*emi_mat[k][index];
+               backward_seq[j][i-1]=temp/scaler[i];
+              }
 }
 
 Output_outer_LOOP:for(i=1;i<=LEN;i++)
